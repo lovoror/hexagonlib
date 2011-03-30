@@ -1,1 +1,10 @@
-hexagonlib is a multi-purpose ActionScript 3 class library for Flash Player 10+ and AIR 1.5+ which provides a collection of classes that help developing ActionScript projects faster. it's most important features are file IO and data structure classes.
+
+hexagonlib - Multi-Purpose ActionScript 3 Library.
+      __    __
+   __/  \__/  \__    __
+  /  \__/HEXAGON \__/  \
+  \__/  \__/  LIBRARY _/
+           \__/  \__/
+
+
+Please see the wiki (https://github.com/hexagonstar/hexagonlib/wiki) for documentation.
