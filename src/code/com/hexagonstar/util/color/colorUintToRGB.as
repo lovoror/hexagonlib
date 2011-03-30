@@ -38,7 +38,7 @@ package com.hexagonstar.util.color
 	 * @param color A hexadecimal color value.
 	 * @return An RGB object.
 	 */
-	public function colorHexToRGB(color:uint):RGB
+	public function colorUintToRGB(color:uint):RGB
 	{
 		return new RGB(color >> 16 & 0xFF, color >> 8 & 0xFF, color & 0xFF);
 	}

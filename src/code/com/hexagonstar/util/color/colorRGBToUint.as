@@ -38,7 +38,7 @@ package com.hexagonstar.util.color
 	 * @param rgb RGB object of which colors are converted.
 	 * @return a hexadecimal color value.
 	 */
-	public function colorRGBToHex(rgb:RGB):uint
+	public function colorRGBToUint(rgb:RGB):uint
 	{
 		var color:uint = 0;
 		color += (rgb.r << 16);

@@ -39,7 +39,7 @@ package com.hexagonstar.util.color
 	 * @param color A hexadecimal color value, e.g. 0xFF2266.
 	 * @return An RGB object containng three values ranging from 0.0 to 1.0.
 	 */
-	public function colorHexToPercentRGB(color:uint):RGB
+	public function colorUintToPercentRGB(color:uint):RGB
 	{
 		var rgb:RGB = new RGB();
 		rgb.r = Number((color >> 16) / 255);

@@ -27,21 +27,17 @@
  */
 package com.hexagonstar.util.color
 {
-	import com.hexagonstar.types.RGB;
-
-	import flash.geom.ColorTransform;
-	
-	
 	/**
-	 * Creates and returns a new ColorTransform object that has it's color channels
-	 * adjusted according to the specified hexadecimal RGB color value.
+	 * Converts the specified color value to a hexadecimal string.
 	 * 
-	 * @param color A hexadecimal color value, e.g. 0xFF2266.
-	 * @return A ColorTransform object.
+	 * @param value Channel color value, ranging from 0 to 255.
+	 * @return The string representation of the color channel, e.g. "FF".
 	 */
-	public function colorHexToColorTransform(color:uint):ColorTransform
+	public function colorChannelToString(value:uint):String
 	{
-		var rgb:RGB = colorHexToPercentRGB(color);
-		return new ColorTransform(rgb.r, rgb.g, rgb.b);
+		if (value > 255) value = 255;
+		var s:String = value.toString(16);
+		if (s.length < 2) s = "0" + s;
+		return s;
 	}
 }
