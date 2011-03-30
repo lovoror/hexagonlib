@@ -27,8 +27,6 @@
  */
 package com.hexagonstar.exception
 {
-
-	
 	/**
 	 * IllegalOperationException is thrown to indicate that an operation has failed.
 	 */

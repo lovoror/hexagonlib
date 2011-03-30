@@ -44,8 +44,7 @@ package com.hexagonstar.exception
 		 */
 		public function SingletonException(object:Object)
 		{
-			super("Tried to instantiate the singleton " + object + " through it's constructor."
-				+ " Use the 'instance' property to get an instance of this singleton.");
+			super("Tried to instantiate the singleton " + object + " through it's constructor.");
 		}
 	}
 }
