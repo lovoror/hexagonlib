@@ -28,25 +28,22 @@
 package com.hexagonstar.util.json
 {
 	import flash.utils.describeType;
-	
-	
+
 	public class JSONEncoder
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
-		
 		/**
 		 * The string that is going to represent the object we're encoding.
 		 * @private
 		 */
 		private var _string:String;
-		
-		
+
+
 		// -----------------------------------------------------------------------------------------
 		// Constructor
 		// -----------------------------------------------------------------------------------------
-		
 		/**
 		 * Creates a new instance of the class.
 		 * 
@@ -56,12 +53,11 @@ package com.hexagonstar.util.json
 		{
 			_string = convertToString(object);
 		}
-		
-		
+
+
 		// -----------------------------------------------------------------------------------------
 		// Getters & Setters
 		// -----------------------------------------------------------------------------------------
-		
 		/**
 		 * Gets the JSON string from the encoder.
 		 *
@@ -72,12 +68,11 @@ package com.hexagonstar.util.json
 		{
 			return _string;
 		}
-		
-		
+
+
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
-		
 		/**
 		 * Converts a value to it's JSON string equivalent.
 		 * 
@@ -114,8 +109,8 @@ package com.hexagonstar.util.json
 			}
 			return "null";
 		}
-		
-		
+
+
 		/**
 		 * Escapes a string accoding to the JSON specification.
 		 *
@@ -199,8 +194,8 @@ package com.hexagonstar.util.json
 
 			return "\"" + s + "\"";
 		}
-		
-		
+
+
 		/**
 		 * Converts an array to it's JSON string equivalent
 		 *
@@ -212,7 +207,7 @@ package com.hexagonstar.util.json
 		{
 			// create a string to store the array's jsonstring value
 			var s:String = "";
-			
+
 			// loop over the elements in the array and add their converted
 			// values to the string
 			var length:int = a.length;
@@ -229,7 +224,7 @@ package com.hexagonstar.util.json
 				// convert the value to a string
 				s += convertToString(a[ i ]);
 			}
-			
+
 			// KNOWN ISSUE:  In ActionScript, Arrays can also be associative
 			// objects and you can put anything in them, ie:
 			// myArray["foo"] = "bar";
@@ -254,7 +249,6 @@ package com.hexagonstar.util.json
 		/**
 		 * Converts an object to it's JSON string equivalent
 		 *
-		 * @private
 		 * @param o The object to convert
 		 * @return The JSON string representation of <code>o</code>
 		 */
@@ -271,21 +265,18 @@ package com.hexagonstar.util.json
 				// as a variable so we don't have to keep looking up o[key]
 				// when testing for valid values to convert
 				var value:Object;
-
 				// loop over the keys in the object and add their converted
 				// values to the string
 				for ( var key:String in o )
 				{
 					// assign value to a variable for quick lookup
 					value = o[ key ];
-
 					// don't add function's to the JSON string
 					if ( value is Function )
 					{
 						// skip this key and try another
 						continue;
 					}
-
 					// when the length is 0 we're adding the first item so
 					// no comma is necessary
 					if ( s.length > 0 )
@@ -293,35 +284,32 @@ package com.hexagonstar.util.json
 						// we've already added an item, so add the comma separator
 						s += ",";
 					}
-
 					s += escapeString(key) + ":" + convertToString(value);
 				}
 			}
-			else // o is a class instance
+			// o is a class instance
+			else
 			{
 				// Loop over all of the variables and accessors in the class and
 				// serialize them along with their values.
-				 // Issue #116 - Make sure accessors are readable && attribute("access").charAt(0) == "r" )
-				for each (var v:XML in classInfo..*.(name() == "variable" || (name() == "accessor")))
+				for each (var v:XML in classInfo..*.(name() == "variable"
+					|| (name() == "accessor" && String(attribute("access")).charAt(0) == "r")))
 				{
 					// Issue #110 - If [Transient] metadata exists, then we should skip
-					if ( v.metadata && v.metadata.( @name == "Transient" ).length() > 0 )
+					if (v.metadata && v.metadata.( @name == "Transient" ).length() > 0)
 					{
 						continue;
 					}
-
 					// When the length is 0 we're adding the first item so
 					// no comma is necessary
-					if ( s.length > 0 )
+					if (s.length > 0)
 					{
 						// We've already added an item, so add the comma separator
 						s += ",";
 					}
-
-					s += escapeString(XMLList(v.@name).toString()) + ":" + convertToString(o[v.@name]);
+					s += escapeString(XMLList(v.@name).toString()) + ":" + convertToString(o[ v.@name ]);
 				}
 			}
-			
 			return "{" + s + "}";
 		}
 	}

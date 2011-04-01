@@ -27,6 +27,7 @@
  */
 package com.hexagonstar.util.json
 {
+	import com.hexagonstar.util.debug.HLog;
 	public class JSONDecoder
 	{
 		//-----------------------------------------------------------------------------------------
@@ -237,19 +238,17 @@ package com.hexagonstar.util.json
 		 */
 		private final function parseObject():Object
 		{
-			// create the object internally that we're going to
-			// attempt to parse from the tokenizer
-			var o:Object = new Object();
+			/* create the object internally that we're going to attempt to parse from the tokenizer. */
+			var o:Object = {};
 			
-			// store the string part of an object member so
-			// that we can assign it a value in the object
+			/* store the string part of an object member so that we can assign it a value in the object */
 			var key:String;
 			
-			// grab the next token from the tokenizer
+			/* grab the next token from the tokenizer */
 			nextValidToken();
 			
-			// check to see if we have an empty object
-			if ( _token.type == JSONTokenType.RIGHT_BRACE )
+			/* check to see if we have an empty object */
+			if (_token.type == JSONTokenType.RIGHT_BRACE)
 			{
 				// we're done reading the object, so return it
 				return o;
@@ -257,13 +256,13 @@ package com.hexagonstar.util.json
 			
 			// in non-strict mode an empty object is also a comma
 			// followed by a right bracket
-			else if ( !_strict && _token.type == JSONTokenType.COMMA )
+			else if (!_strict && _token.type == JSONTokenType.COMMA)
 			{
 				// move past the comma
 				nextValidToken();
 
 				// check to see if we're reached the end of the object
-				if ( _token.type == JSONTokenType.RIGHT_BRACE )
+				if (_token.type == JSONTokenType.RIGHT_BRACE)
 				{
 					return o;
 				}
@@ -275,16 +274,17 @@ package com.hexagonstar.util.json
 			
 			// deal with members of the object, and use an "infinite"
 			// loop because we could have any amount of members
-			while ( true )
+			while (true)
 			{
-				if ( _token.type == JSONTokenType.STRING )
+				if (_token.type == JSONTokenType.STRING)
 				{
 					// the string value we read is the key for the object
 					key = String(_token.value);
-
+					HLog.trace(key);
+					
 					// move past the string to see what's next
 					nextValidToken();
-
+					
 					// after the string there should be a :
 					if ( _token.type == JSONTokenType.COLON )
 					{
