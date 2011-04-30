@@ -25,22 +25,50 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.hexagonstar
+package com.hexagonstar.ioc.injectionpoints
 {
-	/**
-	 * Contains constants that describe version information about the library.
-	 */
-	public class HexagonLib
+	import com.hexagonstar.ioc.Injector;
+	
+	
+	public class InjectionPoint
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
-		public static const NAME:String				= "hexagonlib";
-		public static const VERSION:String			= "0.4.0";
-		public static const BUILD:String			= "481";
-		public static const RELEASE_STAGE:String	= "beta";
-		public static const DATE:String				= "01-May-2011 02:16";
-		public static const COPYRIGHT:String		= "Copyright(c) Hexagon Star Softworks";
+		/**
+		 * @param node
+		 * @param injector
+		 */
+		public function InjectionPoint(node:XML, injector:Injector)
+		{
+			initializeInjection(node);
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @param target
+		 * @param injector
+		 */
+		public function applyInjection(target:Object, injector:Injector):Object
+		{
+			return target;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected function initializeInjection(node:XML):void
+		{
+		}
 	}
 }

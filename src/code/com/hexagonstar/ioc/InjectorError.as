@@ -25,22 +25,13 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.hexagonstar
+package com.hexagonstar.ioc
 {
-	/**
-	 * Contains constants that describe version information about the library.
-	 */
-	public class HexagonLib
+	public class InjectorError extends Error
 	{
-		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
-		
-		public static const NAME:String				= "hexagonlib";
-		public static const VERSION:String			= "0.4.0";
-		public static const BUILD:String			= "481";
-		public static const RELEASE_STAGE:String	= "beta";
-		public static const DATE:String				= "01-May-2011 02:16";
-		public static const COPYRIGHT:String		= "Copyright(c) Hexagon Star Softworks";
+		public function InjectorError(message:* = "", id:* = 0)
+		{
+			super(message, id);
+		}
 	}
 }

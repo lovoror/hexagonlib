@@ -25,22 +25,32 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.hexagonstar
+package com.hexagonstar.ioc.injectionresults
 {
-	/**
-	 * Contains constants that describe version information about the library.
-	 */
-	public class HexagonLib
+	import com.hexagonstar.ioc.Injector;
+	
+	
+	public class InjectSingletonResult extends InjectionResult
 	{
-		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
+		private var _responseType:Class;
+		private var _response:Object;
 		
-		public static const NAME:String				= "hexagonlib";
-		public static const VERSION:String			= "0.4.0";
-		public static const BUILD:String			= "481";
-		public static const RELEASE_STAGE:String	= "beta";
-		public static const DATE:String				= "01-May-2011 02:16";
-		public static const COPYRIGHT:String		= "Copyright(c) Hexagon Star Softworks";
+		
+		public function InjectSingletonResult(responseType:Class)
+		{
+			_responseType = responseType;
+		}
+		
+		
+		override public function getResponse(injector:Injector):Object
+		{
+			return _response ||= createResponse(injector);
+		}
+		
+		
+		private function createResponse(injector:Injector):Object
+		{
+			return injector.instantiate(_responseType);
+		}
 	}
 }
