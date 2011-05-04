@@ -20,7 +20,7 @@
 	<property name="sdk.version"		value="4.5.0"/>
 	
 	<!-- version of the targetted flash player -->
-	<property name="fpv.version"		value="10.1.0"/>
+	<property name="fpv.version"		value="10.2.0"/>
 	
 	<!-- default project folders -->
 	<property name="path.src"			value="${basedir}/src/code"/>
@@ -155,7 +155,7 @@ package com.hexagonstar
 				<source-path path-element="${path.src}"/>
 				<include-sources dir="${path.src}" includes="*"/>
 				
-				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs/player/10.1" append="false">
+				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs/player/10.2" append="false">
 					<include name="*.swc"/>
 				</compiler.library-path>
 				<compiler.library-path dir="${FLEX_HOME}/frameworks/libs" append="false">
