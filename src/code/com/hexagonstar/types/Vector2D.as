@@ -127,7 +127,7 @@ package com.hexagonstar.types
 		
 		public function toString():String
 		{
-			return "[Vector2D, x=" + x + ", y=" + y + " ]";
+			return "[Vector2D, x=" + x + ", y=" + y + "]";
 		}
 		
 		
