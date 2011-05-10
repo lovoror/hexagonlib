@@ -48,6 +48,8 @@ package com.hexagonstar.util.string
 				lines[i] += " ";
 			}
 		}
-		return lines.join("");
+		string = lines.join("");
+		if (string.substr(-1, 1) == " ") string = string.substr(0, string.length - 1);
+		return string;
 	}
 }
