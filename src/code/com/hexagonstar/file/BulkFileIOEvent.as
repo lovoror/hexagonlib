@@ -44,13 +44,13 @@ package com.hexagonstar.file
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		protected var _bytesTotalCurrent:uint;
-		/** @private */
 		protected var _filesLoaded:uint;
 		/** @private */
 		protected var _filesTotal:uint;
 		/** @private */
 		protected var _ratioLoaded:Number;
+		/** @private */
+		protected var _ratioPercentage:uint;
 		/** @private */
 		protected var _weightedPercentage:Number;
 		/** @private */
@@ -76,8 +76,8 @@ package com.hexagonstar.file
 		 * @param weightedPercentage
 		 */
 		public function BulkFileIOEvent(type:String, bulkFile:IBulkFile = null, text:String = null,
-			httpStatus:int = 0, bytesLoaded:uint = 0, bytesTotal:uint = 0, bytesTotalCurrent:uint = 0,
-			filesLoaded:uint = 0, filesTotal:uint = 0, weightedPercentage:Number = 0)
+			httpStatus:int = 0, bytesLoaded:uint = 0, bytesTotal:uint = 0, filesLoaded:uint = 0,
+			filesTotal:uint = 0, weightedPercentage:Number = 0)
 		{
 			super(type);
 			
@@ -90,7 +90,6 @@ package com.hexagonstar.file
 			{
 				_bytesLoaded = bytesLoaded;
 				_bytesTotal = bytesTotal;
-				_bytesTotalCurrent = bytesTotalCurrent;
 				_filesLoaded = filesLoaded;
 				_filesTotal = filesTotal;
 				_weightedPercentage = (isNaN(weightedPercentage) || !isFinite(weightedPercentage)) ? 0 : weightedPercentage;
@@ -98,6 +97,7 @@ package com.hexagonstar.file
 				if (!isFinite(_percentage)) _percentage = 0;
 				_ratioLoaded = _filesTotal == 0 ? 0 : _filesLoaded / _filesTotal;
 				if (!isFinite(_ratioLoaded)) _ratioLoaded = 0;
+				_ratioPercentage = _ratioLoaded * 100;
 			}
 		}
 		
@@ -112,7 +112,7 @@ package com.hexagonstar.file
 		override public function clone():Event
 		{
 			return new BulkFileIOEvent(type, _bulkFile, _text, _httpStatus, _bytesLoaded,
-				_bytesTotal, _bytesTotalCurrent, _filesLoaded, _filesTotal, _weightedPercentage);
+				_bytesTotal, _filesLoaded, _filesTotal, _weightedPercentage);
 		}
 		
 		
@@ -153,6 +153,12 @@ package com.hexagonstar.file
 		public function get ratioLoaded():Number
 		{
 			return _ratioLoaded;
+		}
+		
+		
+		public function get ratioPercentage():uint
+		{
+			return _ratioPercentage;
 		}
 		
 		
