@@ -55,17 +55,6 @@ package com.hexagonstar.file.types
 	
 	
 	/**
-	 * Dispatched after the file's content has been loaded. This event is always
-	 * broadcasted after the file finished loading, regardless whether it's content data
-	 * could be parsed sucessfully or not. Use the <code>valid</code> property after the
-	 * file has been loaded to check if the content is available.
-	 * 
-	 * @eventType flash.events.Event.COMPLETE
-	 */
-	[Event(name="complete", type="flash.events.Event")]
-	
-	
-	/**
 	 * The SoundFile is a file type implementation that can be used to load sound file
 	 * formats that are supported by Flash (MP3 only, wohoo!). It uses the AS3 Sound class
 	 * to load the sound file after which the sound object can be directly obtained from
@@ -188,7 +177,7 @@ package com.hexagonstar.file.types
 				throw new IllegalArgumentException(toString() + " " + _status);
 			}
 			
-			dispatchEvent(new Event(Event.COMPLETE));
+			complete();
 		}
 		
 		
@@ -250,7 +239,7 @@ package com.hexagonstar.file.types
 			else
 			{
 				_loader = null;
-				dispatchEvent(new Event(Event.COMPLETE));
+				complete();
 			}
 		}
 		

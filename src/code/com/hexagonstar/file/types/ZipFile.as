@@ -29,34 +29,13 @@ package com.hexagonstar.file.types
 {
 	import com.hexagonstar.constants.Status;
 	import com.hexagonstar.constants.ZipConstants;
-	import com.hexagonstar.file.FileIOEvent;
 	import com.hexagonstar.file.FileTypes;
 	import com.hexagonstar.util.compr.Inflate;
 	import com.hexagonstar.util.string.TabularText;
 
-	import flash.events.Event;
 	import flash.utils.ByteArray;
 	import flash.utils.Dictionary;
 	import flash.utils.Endian;
-	
-	
-	/**
-	 * Dispatched after the file's content has been loaded. This event is always
-	 * broadcasted after the file finished loading, regardless whether it's content data
-	 * could be parsed sucessfully or not. Use the <code>valid</code> property after the
-	 * file has been loaded to check if the content is available.
-	 * 
-	 * @eventType flash.events.Event.COMPLETE
-	 */
-	[Event(name="complete", type="flash.events.Event")]
-	
-	/**
-	 * Dispatched after a zipped file which has been requested with <code>getFile()</code>
-	 * has been loaded from the ZipFile and is ready to be used.
-	 * 
-	 * @eventType com.hexagonstar.file.FileIOEvent.COMPLETE
-	 */
-	[Event(name="fileIOComplete", type="com.hexagonstar.file.FileIOEvent")]
 	
 	
 	/**
@@ -194,8 +173,8 @@ package com.hexagonstar.file.types
 			
 			if (f)
 			{
-				f.size = e.size;
-				f.addEventListener(Event.COMPLETE, onFileReady);
+				f.bytesLoaded = e.size;
+				f.completeSignal.addOnce(onFileReady);
 				f.contentAsBytes = getData(path);
 			}
 			
@@ -443,7 +422,7 @@ package com.hexagonstar.file.types
 		/**
 		 * The uncompressed size of the zip file.
 		 */
-		override public function get size():Number
+		override public function get bytesLoaded():Number
 		{
 			var s:Number = 0;
 			for (var i:int = 0; i < _fileList.length; i++)
@@ -453,7 +432,7 @@ package com.hexagonstar.file.types
 			return s;
 		}
 		/** @private */
-		override public function set size(v:Number):void
+		override public function set bytesLoaded(v:Number):void
 		{
 			/* should not be able to set the size, which is
 			 * calculated from the zipped files inside it! */
@@ -465,12 +444,12 @@ package com.hexagonstar.file.types
 		 */
 		public function get compressedSize():Number
 		{
-			return _size;
+			return _bytesLoaded;
 		}
 		/** @private */
 		public function set compressedSize(v:Number):void
 		{
-			_size = v;
+			_bytesLoaded = v;
 		}
 		
 		
@@ -479,7 +458,7 @@ package com.hexagonstar.file.types
 		 */
 		public function get ratio():Number
 		{
-			return ZipFile.round((compressedSize / size) * 100, 1);
+			return ZipFile.round((compressedSize / bytesLoaded) * 100, 1);
 		}
 		
 		
@@ -527,7 +506,7 @@ package com.hexagonstar.file.types
 				readCEN();
 			}
 			
-			dispatchEvent(new Event(Event.COMPLETE));
+			complete();
 		}
 		
 		
@@ -539,11 +518,9 @@ package com.hexagonstar.file.types
 		 * Invoked after a requested, zipped file has received it's content data.
 		 * @private
 		 */
-		private function onFileReady(e:Event):void
+		private function onFileReady(f:IFile):void
 		{
-			var f:IFile = IFile(e.target);
-			f.removeEventListener(Event.COMPLETE, onFileReady);
-			dispatchEvent(new FileIOEvent(FileIOEvent.COMPLETE, f));
+			_completeSignal.dispatch(f);
 		}
 		
 		

@@ -25,69 +25,40 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package com.hexagonstar.file.types
+package com.hexagonstar.file
 {
-	/**
-	 * The TextFile is a file type implementation that can be used to load any kind of
-	 * text-based file. You can use the <code>contentAsString</code> property to return
-	 * the loaded text typed as a String.
-	 * 
-	 * @see com.hexagonstar.file.types.IFile
-	 */
-	public class TextFile extends BinaryFile implements IFile
+	import com.hexagonstar.file.types.IFile;
+	import com.hexagonstar.signals.Signal;
+	
+	
+	public class FileIOSignal extends Signal
 	{
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
+		public static const OPEN:String					= "fileIOOpen";
+		public static const PROGRESS:String				= "fileIOProgress";
+		public static const FILE_COMPLETE:String		= "fileIOFileComplete";
+		public static const ALL_COMPLETE:String			= "fileIOAllComplete";
+		public static const ABORT:String				= "fileIOAbort";
+		public static const PAUSE:String				= "fileIOPause";
+		public static const UNPAUSE:String				= "fileIOUnpause";
+		public static const HTTP_STATUS:String			= "fileIOHTTPStatus";
+		public static const IO_ERROR:String				= "fileIOIOError";
+		public static const SECURITY_ERROR:String		= "fileIOSecurityError";
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Creates a new instance of the file class.
-		 * 
-		 * @param path The path of the file that this file object is used for.
-		 * @param id An optional ID for the file.
-		 * @param priority An optional load priority for the file. Used for loading with the
-		 *            BulkLoader class.
-		 * @param weight An optional weight for the file. Used for weighted loading with the
-		 *            BulkLoader class.
+		 * Creates a new FileIOEvent instance.
 		 */
-		public function TextFile(path:String = null, id:String = null, priority:Number = NaN,
-			weight:int = 1)
+		public function FileIOSignal()
 		{
-			super(path, id, priority, weight);
-		}
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Getters & Setters
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function get fileTypeID():int
-		{
-			return FileTypeIndex.TEXT_FILE_ID;
-		}
-		
-		
-		/**
-		 * @inheritDoc
-		 */
-		override public function get content():*
-		{
-			return contentAsString;
-		}
-		
-		
-		/**
-		 * The TextFile content, as a String.
-		 */
-		public function get contentAsString():String
-		{
-			if (!_content) return null;
-			var s:String = _content.readUTFBytes(_content.length);
-			_content.position = 0;
-			return s;
+			super(IFile);
 		}
 	}
 }

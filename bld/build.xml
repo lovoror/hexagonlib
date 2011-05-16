@@ -9,7 +9,7 @@
 	<!-- application information -->
 	<property name="app.name"			value="hexagonlib"/>
 	<property name="app.pubname"		value="hexagonlib"/>
-	<property name="app.version"		value="0.4.0"/>
+	<property name="app.version"		value="0.5.0"/>
 	<property name="app.releasestage"	value="beta"/>
 	<property name="app.copyright"		value="Copyright(c) Hexagon Star Softworks"/>
 	

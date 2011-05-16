@@ -40,17 +40,6 @@ package com.hexagonstar.file.types
 	
 	
 	/**
-	 * Dispatched after the file's content has been loaded. This event is always
-	 * broadcasted after the file finished loading, regardless whether it's content data
-	 * could be parsed sucessfully or not. Use the <code>valid</code> property after the
-	 * file has been loaded to check if the content is available.
-	 * 
-	 * @eventType flash.events.Event.COMPLETE
-	 */
-	[Event(name="complete", type="flash.events.Event")]
-	
-	
-	/**
 	 * The SWFFile is a file type implementation that can be used to load SWF files. It
 	 * uses the AS3 Loader class to load the SWF file and then provides getters to obtain
 	 * a MovieClip of the Loader content or the Loader directly.
@@ -190,7 +179,7 @@ package com.hexagonstar.file.types
 		{
 			_loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onComplete);
 			_loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onComplete);
-			dispatchEvent(new Event(Event.COMPLETE));
+			complete();
 		}
 	}
 }

@@ -38,9 +38,6 @@ package com.hexagonstar.file
 	
 	/**
 	 * A special bulk file for loading sound files.
-	 * 
-	 * TODO Needs to be tested since the SoundFile implementation changed for supporting
-	 * sound loading from zip files.
 	 */
 	public class BulkSoundFile extends BulkFile implements IBulkFile
 	{
@@ -82,10 +79,10 @@ package com.hexagonstar.file
 			_status = BulkFile.STATUS_PROGRESSING;
 			
 			_sound = new Sound();
-			_sound.addEventListener(Event.OPEN, onOpen, false, 0, true);
-			_sound.addEventListener(ProgressEvent.PROGRESS, onProgress, false, 0, true);
-			_sound.addEventListener(Event.COMPLETE, onFileComplete, false, 0, true);
-			_sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError, false, 0, true);
+			_sound.addEventListener(Event.OPEN, onOpen);
+			_sound.addEventListener(ProgressEvent.PROGRESS, onProgress);
+			_sound.addEventListener(Event.COMPLETE, onFileComplete);
+			_sound.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			
 			var r:URLRequest = BulkFile.createURLRequest(_file.path, useAbsoluteFilePath,
 				preventCaching);
@@ -121,8 +118,8 @@ package com.hexagonstar.file
 		{
 			_status = BulkFile.STATUS_LOADED;
 			_loading = false;
-			removeLoaderListenersFrom();
-			_file.addEventListener(Event.COMPLETE, onFileReady, false, 0, true);
+			removeEventListeners();
+			_file.completeSignal.addOnce(onFileReady);
 			_file.content = _sound;
 			_sound = null;
 		}
@@ -135,8 +132,9 @@ package com.hexagonstar.file
 		/**
 		 * @private
 		 */
-		override protected function removeLoaderListenersFrom():void
+		override protected function removeEventListeners():void
 		{
+			if (!_sound) return;
 			_sound.removeEventListener(Event.OPEN, onOpen);
 			_sound.removeEventListener(ProgressEvent.PROGRESS, onProgress);
 			_sound.removeEventListener(Event.COMPLETE, onFileComplete);

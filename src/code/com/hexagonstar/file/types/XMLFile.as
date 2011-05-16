@@ -29,19 +29,7 @@ package com.hexagonstar.file.types
 {
 	import com.hexagonstar.constants.Status;
 
-	import flash.events.Event;
 	import flash.utils.ByteArray;
-	
-	
-	/**
-	 * Dispatched after the file's content has been loaded. This event is always
-	 * broadcasted after the file finished loading, regardless whether it's content data
-	 * could be parsed sucessfully or not. Use the <code>valid</code> property after the
-	 * file has been loaded to check if the content is available.
-	 * 
-	 * @eventType flash.events.Event.COMPLETE
-	 */
-	[Event(name="complete", type="flash.events.Event")]
 	
 	
 	/**
@@ -146,7 +134,7 @@ package com.hexagonstar.file.types
 				_status = err.message;
 			}
 			
-			dispatchEvent(new Event(Event.COMPLETE));
+			complete();
 		}
 	}
 }
