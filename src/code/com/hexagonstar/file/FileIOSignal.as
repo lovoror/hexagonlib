@@ -34,22 +34,6 @@ package com.hexagonstar.file
 	public class FileIOSignal extends Signal
 	{
 		//-----------------------------------------------------------------------------------------
-		// Constants
-		//-----------------------------------------------------------------------------------------
-		
-		public static const OPEN:String					= "fileIOOpen";
-		public static const PROGRESS:String				= "fileIOProgress";
-		public static const FILE_COMPLETE:String		= "fileIOFileComplete";
-		public static const ALL_COMPLETE:String			= "fileIOAllComplete";
-		public static const ABORT:String				= "fileIOAbort";
-		public static const PAUSE:String				= "fileIOPause";
-		public static const UNPAUSE:String				= "fileIOUnpause";
-		public static const HTTP_STATUS:String			= "fileIOHTTPStatus";
-		public static const IO_ERROR:String				= "fileIOIOError";
-		public static const SECURITY_ERROR:String		= "fileIOSecurityError";
-		
-		
-		//-----------------------------------------------------------------------------------------
 		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
