@@ -43,12 +43,16 @@ package com.hexagonstar.file
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		public var bytesTotalCurrent:uint;
-		public var filesLoaded:int;
-		public var filesTotal:int;
-		public var ratioLoaded:Number;
-		public var weightPercent:Number;
-		
+		/** @private */
+		protected var _bytesTotalCurrent:uint;
+		/** @private */
+		protected var _filesLoaded:uint;
+		/** @private */
+		protected var _filesTotal:uint;
+		/** @private */
+		protected var _ratioLoaded:Number;
+		/** @private */
+		protected var _weightedPercentage:Number;
 		/** @private */
 		protected var _bulkFile:IBulkFile;
 		
@@ -69,18 +73,11 @@ package com.hexagonstar.file
 		 * @param bytesTotalCurrent
 		 * @param filesLoaded
 		 * @param filesTotal
-		 * @param weightPercent
+		 * @param weightedPercentage
 		 */
-		public function BulkFileIOEvent(type:String,
-										bulkFile:IBulkFile = null,
-										text:String = null,
-										httpStatus:int = 0,
-										bytesLoaded:uint = 0,
-										bytesTotal:uint = 0,
-										bytesTotalCurrent:uint = 0,
-										filesLoaded:int = 0,
-										filesTotal:int = 0,
-										weightPercent:Number = 0)
+		public function BulkFileIOEvent(type:String, bulkFile:IBulkFile = null, text:String = null,
+			httpStatus:int = 0, bytesLoaded:uint = 0, bytesTotal:uint = 0, bytesTotalCurrent:uint = 0,
+			filesLoaded:uint = 0, filesTotal:uint = 0, weightedPercentage:Number = 0)
 		{
 			super(type);
 			
@@ -91,18 +88,16 @@ package com.hexagonstar.file
 			/* No need to waste time setting these for non-progress type events! */
 			if (type == FileIOEvent.PROGRESS)
 			{
-				this.bytesLoaded = bytesLoaded;
-				this.bytesTotal = bytesTotal;
-				this.bytesTotalCurrent = bytesTotalCurrent;
-				this.filesLoaded = filesLoaded;
-				this.filesTotal = filesTotal;
-				this.weightPercent = (isNaN(weightPercent) || !isFinite(weightPercent)) ? 0
-					: weightPercent;
-				this.percentLoaded = this.bytesTotal > 0
-					? ((this.bytesLoaded / this.bytesTotal) * 100) : 0;
-				if (!isFinite(this.percentLoaded)) this.percentLoaded = 0;
-				this.ratioLoaded = this.filesTotal == 0 ? 0 : this.filesLoaded / this.filesTotal;
-				if (!isFinite(this.ratioLoaded)) this.ratioLoaded = 0;
+				_bytesLoaded = bytesLoaded;
+				_bytesTotal = bytesTotal;
+				_bytesTotalCurrent = bytesTotalCurrent;
+				_filesLoaded = filesLoaded;
+				_filesTotal = filesTotal;
+				_weightedPercentage = (isNaN(weightedPercentage) || !isFinite(weightedPercentage)) ? 0 : weightedPercentage;
+				_percentage = _bytesTotal > 0 ? ((_bytesLoaded / _bytesTotal) * 100) : 0;
+				if (!isFinite(_percentage)) _percentage = 0;
+				_ratioLoaded = _filesTotal == 0 ? 0 : _filesLoaded / _filesTotal;
+				if (!isFinite(_ratioLoaded)) _ratioLoaded = 0;
 			}
 		}
 		
@@ -116,8 +111,8 @@ package com.hexagonstar.file
 		 */
 		override public function clone():Event
 		{
-			return new BulkFileIOEvent(type, _bulkFile, _text, _httpStatus, bytesLoaded,
-				bytesTotal, bytesTotalCurrent, filesLoaded, filesTotal, weightPercent);
+			return new BulkFileIOEvent(type, _bulkFile, _text, _httpStatus, _bytesLoaded,
+				_bytesTotal, _bytesTotalCurrent, _filesLoaded, _filesTotal, _weightedPercentage);
 		}
 		
 		
@@ -128,7 +123,7 @@ package com.hexagonstar.file
 		/**
 		 * Gets the bulkfile. Only for use with BulkFiles and the BulkLoader.
 		 */
-		public function get bulkFile():IBulkFile
+		internal function get bulkFile():IBulkFile
 		{
 			return _bulkFile;
 		}
@@ -140,6 +135,42 @@ package com.hexagonstar.file
 		override public function get file():IFile
 		{
 			return _bulkFile.file;
+		}
+		
+		
+		public function get filesLoaded():uint
+		{
+			return _filesLoaded;
+		}
+		
+		
+		public function get filesTotal():uint
+		{
+			return _filesTotal;
+		}
+		
+		
+		public function get ratioLoaded():Number
+		{
+			return _ratioLoaded;
+		}
+		
+		
+		public function get weightedPercentage():Number
+		{
+			return _weightedPercentage;
+		}
+		
+		
+		public function get currentFileBytesLoaded():uint
+		{
+			return _bulkFile.bytesLoaded;
+		}
+		
+		
+		public function get currentFileBytesTotal():uint
+		{
+			return _bulkFile.bytesTotal;
 		}
 	}
 }
