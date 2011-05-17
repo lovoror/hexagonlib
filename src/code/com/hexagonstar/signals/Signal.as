@@ -30,7 +30,6 @@ package com.hexagonstar.signals
 	import com.hexagonstar.util.debug.HLog;
 
 	import flash.errors.IllegalOperationError;
-	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * Signal dispatches events to multiple listeners. It is inspired by C# events and
@@ -44,11 +43,11 @@ package com.hexagonstar.signals
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		protected var _valueClasses:Array;
+		protected var _valueClasses:Vector.<Class>;
 		protected var _strict:Boolean = true;
 		protected var _bindings:SignalBindingList = SignalBindingList.NIL;
-
-
+		
+		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
 		 * 
@@ -66,8 +65,7 @@ package com.hexagonstar.signals
 			/* Cannot use super.apply(null, valueClasses), so allow the subclass to
 			 * call super(valueClasses). */
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array)
-				? valueClasses[0]
-				: valueClasses;
+				? valueClasses[0] : valueClasses;
 		}
 		
 		
@@ -174,20 +172,20 @@ package com.hexagonstar.signals
 		 */
 		public function get valueClasses():Array
 		{
-			return _valueClasses;
+			var a:Array = [];
+			for (var i:uint = 0; i < _valueClasses.length; i++)
+			{
+				a.push(_valueClasses[i]);
+			}
+			return a;
 		}
 		public function set valueClasses(v:Array):void
 		{
-			/* Clone so the Array cannot be affected from outside. */
-			_valueClasses = v ? v.slice() : [];
-			for (var i:uint = _valueClasses.length; i--;)
+			_valueClasses = new Vector.<Class>();
+			if (!v) return;
+			for (var i:uint = 0; i < v.length; i++)
 			{
-				if (!(_valueClasses[i] is Class))
-				{
-					fail("Signal.set.valueClasses", "Invalid valueClasses argument: item at index "
-						+ i + " should be a Class but was: <" + _valueClasses[i] + ">."
-						+ getQualifiedClassName(_valueClasses[i]), ArgumentError);
-				}
+				_valueClasses.push(v[i]);
 			}
 		}
 		

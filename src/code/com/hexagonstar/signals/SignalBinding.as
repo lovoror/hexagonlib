@@ -90,7 +90,7 @@ package com.hexagonstar.signals
 
 			// If we have parameters, add them to the valueObject
 			// Note: This could be exensive if we're after the fastest dispatch possible.
-			if (null != _params && _params.length > 0)
+			if (_params != null && _params.length > 0)
 			{
 				// Should there be any checking on the params against the listener?
 				valueObjects = valueObjects.concat(_params);

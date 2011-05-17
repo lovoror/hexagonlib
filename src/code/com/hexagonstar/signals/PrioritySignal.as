@@ -38,8 +38,7 @@ package com.hexagonstar.signals
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call
 			// super(valueClasses).
 			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array)
-				? valueClasses[0]
-				: valueClasses;
+				? valueClasses[0] : valueClasses;
 			super(valueClasses);
 		}
 		
