@@ -164,8 +164,11 @@ package com.hexagonstar.signals
 		}
 		public function set listener(v:Function):void
 		{
-			if (v == null) throw new ArgumentError("Given listener is null."
-				+ "\nDid you want to set enabled to false instead?");
+			if (v == null)
+			{
+				Signal.fail("SignalBinding.set.listener", "Given listener is null. Did you want"
+					+ " to set enabled to false instead?", ArgumentError);
+			}
 			verifyListener(v);
 			_listener = v;
 		}
@@ -242,24 +245,24 @@ package com.hexagonstar.signals
 		{
 			if (listener == null)
 			{
-				throw new ArgumentError('Given listener is null.');
+				Signal.fail("SignalBinding.verifyListener", "The specified listener is null.",
+					ArgumentError);
 			}
 			
-			if (null == _signal)
+			if (_signal == null)
 			{
-				throw new Error('Internal signal reference has not been set yet.');
+				Signal.fail("SignalBinding.verifyListener", "Internal signal reference has not"
+					+ " been set yet.", Error);
 			}
 			
-			const numListenerArgs:int = listener.length;
-			const argumentString:String = (numListenerArgs == 1) ? 'argument' : 'arguments';
-			
+			const c:int = listener.length;
 			if (_strict)
 			{
-				if (numListenerArgs < _signal.valueClasses.length)
+				if (c < _signal.valueClasses.length)
 				{
-					throw new ArgumentError('Listener has ' + numListenerArgs + ' '
-						+ argumentString + ' but it needs to be ' + _signal.valueClasses.length
-						+ ' to match the signal\'s value classes.');
+					Signal.fail("SignalBinding.verifyListener", "Listener has " + c
+						+ " arguments but it needs to be " + _signal.valueClasses.length
+						+ " to match the signal's value classes.", ArgumentError);
 				}
 			}
 		}

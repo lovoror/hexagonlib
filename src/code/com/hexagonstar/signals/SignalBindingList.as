@@ -71,17 +71,19 @@ package com.hexagonstar.signals
 		{
 			if (!head && !tail)
 			{
-				if (NIL) throw new ArgumentError("Parameters head and tail are null. Use the"
-					+ " NIL element instead.");
+				if (NIL)
+				{
+					Signal.fail("SignalBindingList", "Parameters head and tail are null. Use"
+						+ " the NIL element instead.", ArgumentError);
+				}
 				// this is the NIL element as per definition
 				nonEmpty = false;
+				return;
 			}
-			else
-			{
-				this.head = head;
-				this.tail = tail || NIL;
-				nonEmpty = true;
-			}
+			
+			this.head = head;
+			this.tail = tail || NIL;
+			nonEmpty = true;
 		}
 		
 		
@@ -114,13 +116,12 @@ package com.hexagonstar.signals
 			if (!binding) return this;
 			if (!nonEmpty) return new SignalBindingList(binding);
 			// Special case: just one binding.
-			if (tail == NIL)
-				return new SignalBindingList(binding).prepend(head);
-
+			if (tail == NIL) return new SignalBindingList(binding).prepend(head);
+			
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
-
+			
 			while (current.nonEmpty)
 			{
 				subClone = subClone.tail = new SignalBindingList(current.head);
@@ -144,7 +145,7 @@ package com.hexagonstar.signals
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
-
+			
 			// Find a binding with lower priority and go in front of it.
 			while (current.nonEmpty)
 			{
@@ -153,11 +154,11 @@ package com.hexagonstar.signals
 					const newTail:SignalBindingList = current.prepend(binding);
 					return new SignalBindingList(head, newTail);
 				}
-
+				
 				subClone = subClone.tail = new SignalBindingList(current.head);
 				current = current.tail;
 			}
-
+			
 			// Binding has lowest priority.
 			subClone.tail = new SignalBindingList(binding);
 			return wholeClone;
@@ -167,14 +168,13 @@ package com.hexagonstar.signals
 		public function filterNot(listener:Function):SignalBindingList
 		{
 			if (!nonEmpty || listener == null) return this;
-
 			if (listener == head.listener) return tail;
-
+			
 			// The first item wasn't a match so the filtered list will contain it.
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
-
+			
 			while (current.nonEmpty)
 			{
 				if (current.head.listener == listener)
@@ -183,11 +183,11 @@ package com.hexagonstar.signals
 					subClone.tail = current.tail;
 					return wholeClone;
 				}
-
+				
 				subClone = subClone.tail = new SignalBindingList(current.head);
 				current = current.tail;
 			}
-
+			
 			// The listener was not found so this list is unchanged.
 			return this;
 		}
@@ -196,14 +196,12 @@ package com.hexagonstar.signals
 		public function contains(listener:Function):Boolean
 		{
 			if (!nonEmpty) return false;
-
 			var p:SignalBindingList = this;
 			while (p.nonEmpty)
 			{
 				if (p.head.listener == listener) return true;
 				p = p.tail;
 			}
-
 			return false;
 		}
 		
@@ -211,14 +209,12 @@ package com.hexagonstar.signals
 		public function find(listener:Function):ISignalBinding
 		{
 			if (!nonEmpty) return null;
-
 			var p:SignalBindingList = this;
 			while (p.nonEmpty)
 			{
 				if (p.head.listener == listener) return p.head;
 				p = p.tail;
 			}
-
 			return null;
 		}
 		
@@ -227,15 +223,12 @@ package com.hexagonstar.signals
 		{
 			var buffer:String = '';
 			var p:SignalBindingList = this;
-
 			while (p.nonEmpty)
 			{
 				buffer += p.head + " -> ";
 				p = p.tail;
 			}
-
 			buffer += "NIL";
-
 			return "[List " + buffer + "]";
 		}
 		

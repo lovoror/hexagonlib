@@ -112,43 +112,41 @@ package com.hexagonstar.signals
 		override public function dispatch(...valueObjects):void
 		{
 			// Validate value objects against pre-defined value classes.
-			var valueObject:Object;
-			var valueClass:Class;
-
-			const numValueClasses:int = _valueClasses.length;
-			const numValueObjects:int = valueObjects.length;
-
-			if (numValueObjects < numValueClasses)
+			var vo:Object;
+			var vc:Class;
+			const numVC:uint = _valueClasses.length;
+			const numVO:uint = valueObjects.length;
+			
+			if (numVO < numVC)
 			{
-				throw new ArgumentError('Incorrect number of arguments. ' + 'Expected at least ' + numValueClasses + ' but received ' + numValueObjects + '.');
+				fail("DeluxeSignal.dispatch", "Incorrect number of arguments. Expected at least "
+					+ numVC + " but received " + numVO + ".", ArgumentError);
 			}
-
-			for (var i:int = 0; i < numValueClasses; i++)
+			
+			for (var i:uint = 0; i < numVC; i++)
 			{
-				valueObject = valueObjects[i];
-				valueClass = _valueClasses[i];
-
-				if (valueObject === null || valueObject is valueClass) continue;
-
-				throw new ArgumentError('Value object <' + valueObject + '> is not an instance of <' + valueClass + '>.');
+				vo = valueObjects[i];
+				vc = _valueClasses[i];
+				if (vo === null || vo is vc) continue;
+				fail("DeluxeSignal.dispatch", "Value object <" + vo + "> is not an instance of <"
+					+ vc + ">!", ArgumentError);
 			}
-
+			
 			// Extract and clone event object if necessary.
-			var event:IEvent = valueObjects[0] as IEvent;
-
-			if (event)
+			var e:IEvent = valueObjects[0];
+			if (e)
 			{
-				if (event.target)
+				if (e.target)
 				{
-					event = event.clone();
-					valueObjects[0] = event;
+					e = e.clone();
+					valueObjects[0] = e;
 				}
-
-				event.target = target;
-				event.currentTarget = target;
-				event.signal = this;
+				
+				e.target = target;
+				e.currentTarget = target;
+				e.signal = this;
 			}
-
+			
 			// Broadcast to listeners.
 			var bindingsToProcess:SignalBindingList = _bindings;
 			while (bindingsToProcess.nonEmpty)
@@ -156,17 +154,17 @@ package com.hexagonstar.signals
 				bindingsToProcess.head.execute(valueObjects);
 				bindingsToProcess = bindingsToProcess.tail;
 			}
-
+			
 			// Bubble the event as far as possible.
-			if (!event || !event.bubbles) return;
+			if (!e || !e.bubbles) return;
 			var currentTarget:Object = target;
-
+			
 			while (currentTarget && currentTarget.hasOwnProperty("parent") && (currentTarget = currentTarget["parent"]))
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
 					// onEventBubbled() can stop the bubbling by returning false.
-					if (!IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event))
+					if (!IBubbleEventHandler(e.currentTarget = currentTarget).onEventBubbled(e))
 						break;
 				}
 			}

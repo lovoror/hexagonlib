@@ -27,6 +27,8 @@
  */
 package com.hexagonstar.signals
 {
+	import com.hexagonstar.util.debug.HLog;
+
 	import flash.errors.IllegalOperationError;
 	import flash.utils.getQualifiedClassName;
 
@@ -117,30 +119,30 @@ package com.hexagonstar.signals
 		 */
 		public function dispatch(...valueObjects):void
 		{
-			// Validate value objects against pre-defined value classes.
-			var valueObject:Object;
-			var valueClass:Class;
+			/* Validate value objects against pre-defined value classes. */
+			var vo:Object;
+			var vc:Class;
 			
-			// If valueClasses is empty, value objects are not type-checked.
-			const numValueClasses:int = _valueClasses.length;
-			const numValueObjects:int = valueObjects.length;
+			/* If valueClasses is empty, value objects are not type-checked. */
+			const numVC:uint = _valueClasses.length;
+			const numVO:uint = valueObjects.length;
 			
-			if (numValueObjects < numValueClasses)
+			if (numVO < numVC)
 			{
-				throw new ArgumentError('Incorrect number of arguments. ' + 'Expected at least '
-					+ numValueClasses + ' but received ' + numValueObjects + '.');
-			}
-
-			for (var i:int = 0; i < numValueClasses; ++i)
-			{
-				valueObject = valueObjects[i];
-				valueClass = _valueClasses[i];
-				if (valueObject === null || valueObject is valueClass) continue;
-				throw new ArgumentError('Value object <' + valueObject
-					+ '> is not an instance of <' + valueClass + '>.');
+				fail("Signal.dispatch", "Incorrect number of arguments! Expected at least " + numVC
+					+ " but received " + numVO + ".", ArgumentError);
 			}
 			
-			// Broadcast to listeners.
+			for (var i:uint = 0; i < numVC; ++i)
+			{
+				vo = valueObjects[i];
+				vc = _valueClasses[i];
+				if (vo === null || vo is vc) continue;
+				fail("Signal.dispatch", "Value object <" + vo + "> is not an instance of <" + vc
+					+ ">!", ArgumentError);
+			}
+			
+			/* Broadcast to listeners. */
 			var bindingsToProcess:SignalBindingList = _bindings;
 			if (bindingsToProcess.nonEmpty)
 			{
@@ -150,6 +152,16 @@ package com.hexagonstar.signals
 					bindingsToProcess = bindingsToProcess.tail;
 				}
 			}
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		internal static function fail(caller:String, message:String, error:Class = null):void
+		{
+			HLog.fatal(caller + ": " + message);
+			if (error) throw new error(caller + ": " + message);
 		}
 		
 		
@@ -168,13 +180,13 @@ package com.hexagonstar.signals
 		{
 			/* Clone so the Array cannot be affected from outside. */
 			_valueClasses = v ? v.slice() : [];
-			for (var i:int = _valueClasses.length; i--;)
+			for (var i:uint = _valueClasses.length; i--;)
 			{
 				if (!(_valueClasses[i] is Class))
 				{
-					throw new ArgumentError('Invalid valueClasses argument: '
-						+ 'item at index ' + i + ' should be a Class but was: <'
-						+ _valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+					fail("Signal.set.valueClasses", "Invalid valueClasses argument: item at index "
+						+ i + " should be a Class but was: <" + _valueClasses[i] + ">."
+						+ getQualifiedClassName(_valueClasses[i]), ArgumentError);
 				}
 			}
 		}
@@ -227,19 +239,16 @@ package com.hexagonstar.signals
 		protected function isRegistrationPossible(listener:Function, once:Boolean):Boolean
 		{
 			if (!_bindings.nonEmpty) return true;
-
 			const existingBinding:ISignalBinding = _bindings.find(listener);
 			if (!existingBinding) return true;
-
 			if (existingBinding.once != once)
 			{
-				// If the listener was previously added, definitely don't add it again.
-				// But throw an exception if their once values differ.
-				throw new IllegalOperationError("You cannot addOnce() then add() the same"
-					+ " listener without removing the relationship first.");
+				/* If the listener was previously added, definitely don't add it again.
+				 * But throw an exception if their once values differ. */
+				fail("Signal.isRegistrationPossible", "You cannot addOnce() then add() the same"
+					+ " listener without removing the relationship first.", IllegalOperationError);
 			}
-			
-			// Listener was already registered.
+			/* Listener was already registered. */
 			return false;
 		}
 	}
