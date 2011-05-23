@@ -116,6 +116,15 @@ package com.hexagonstar.types
 		
 		
 		/**
+		 * Returns a random color value from the palette.
+		 */
+		public function getRandomColorValue():uint
+		{
+			return _colors[uint(Math.random() * _colors.length)].value;
+		}
+		
+		
+		/**
 		 * Returns the color name that is at the specified index.
 		 * 
 		 * @param index
