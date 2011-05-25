@@ -37,28 +37,20 @@ package com.hexagonstar.util.compr
 	 * Inflater is used to decompress data that has been compressed according 
 	 * to the "deflate" standard described in rfc1950.
 	 */
-	public class Inflate
+	public final class Inflate
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		/** @private */
 		private static const MAXBITS:int	= 15;
-		/** @private */
 		private static const MAXLCODES:int	= 286;
-		/** @private */
 		private static const MAXDCODES:int	= 30;
-		/** @private */
 		private static const FIXLCODES:int	= 288;
 		
-		/** @private */
 		private static const LENS:Array = [3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258];
-		/** @private */
 		private static const LEXT:Array = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0];
-		/** @private */
 		private static const DISTS:Array = [1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577];
-		/** @private */
 		private static const DEXT:Array = [0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13];
 		
 		
@@ -66,17 +58,11 @@ package com.hexagonstar.util.compr
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		/** @private */
 		private var _inBuffer:ByteArray;
-		/** @private */
 		private var _inCount:uint;
-		/** @private */
 		private var _bitBuffer:int;
-		/** @private */
 		private var _bitCount:int;
-		/** @private */
 		private var _lenCodes:Codes;
-		/** @private */
 		private var _distCodes:Codes;
 		
 		
@@ -98,38 +84,33 @@ package com.hexagonstar.util.compr
 			_inCount = _bitBuffer = _bitCount = 0;
 			
 			var err:int = 0;
-			
 			do
 			{
 				var last:int = bits(1);
 				var type:int = bits(2);
-
+				
 				if (type == 0)
 				{
 					stored(output);
 				}
 				else if (type == 3)
 				{
-					error("invalid block type (type == 3).", -1);
+					error("Invalid block type (type == 3).", -1);
 				}
 				else
 				{
 					_lenCodes = new Codes();
 					_distCodes = new Codes();
-					
 					if (type == 1) constructFixedTables();
 					else if (type == 2) err = constructDynamicTables();
 					if (err != 0) return err;
-					
-					/* decode data until end-of-block code */
+					/* Decode data until end-of-block code. */
 					err = codes(output);
 				}
-				
-				/* return with error */
+				/* Return with error */
 				if (err != 0) break;
 			}
 			while (!last);
-			
 			return err;
 		}
 		
@@ -143,27 +124,21 @@ package com.hexagonstar.util.compr
 		 */
 		private function bits(need:int):int
 		{
-			// bit accumulator (can use up to 20 bits)
-			// load at least need bits into val
+			/* bit accumulator (can use up to 20 bits). Load at least need bits into val */
 			var val:int = _bitBuffer;
-			
 			while (_bitCount < need)
 			{
 				if (_inCount == _inBuffer.length)
 				{
-					error("available inflate data did not terminate.", 2);
+					error("Available inflate data did not terminate.", 2);
 				}
-				
 				val |= _inBuffer[_inCount++] << _bitCount;
-				// load eight bits
-				_bitCount += 8;
+				_bitCount += 8; // load eight bits.
 			}
-			
-			// drop need bits and update buffer, always zero to seven bits left
+			/* drop need bits and update buffer, always zero to seven bits left */
 			_bitBuffer = val >> need;
 			_bitCount -= need;
-			
-			// return need bits, zeroing the bits above that
+			/* return need bits, zeroing the bits above that */
 			return val & ((1 << need) - 1);
 		}
 		
@@ -173,11 +148,11 @@ package com.hexagonstar.util.compr
 		 */
 		private function construct(h:Codes, length:Array, n:int):int
 		{
-			// offsets in symbol table for each length
-			var offs:Array = [];
+			var len:int;
+			var offs:Array = []; // offsets in symbol table for each length
 			
 			// count number of codes of each length
-			for (var len:int = 0; len <= MAXBITS; len++)
+			for (len = 0; len <= MAXBITS; len++)
 			{
 				h.count[len] = 0;
 			}
