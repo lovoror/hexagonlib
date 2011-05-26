@@ -37,7 +37,7 @@ package com.hexagonstar.util.checksum
 		//-----------------------------------------------------------------------------------------
 		
 		/** @private */
-		public static var table:Vector.<uint> = createCRCTable();
+		public static const table:Vector.<uint> = createCRCTable();
 		
 		
 		//-----------------------------------------------------------------------------------------
