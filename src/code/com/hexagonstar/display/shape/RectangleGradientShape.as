@@ -37,7 +37,7 @@ package com.hexagonstar.display.shape
 	/**
 	 * RectangleGradientShape is a rectangle shape filled with a color gradient.
 	 */
-	public class RectangleGradientShape extends Shape
+	public final class RectangleGradientShape extends Shape
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constructor
