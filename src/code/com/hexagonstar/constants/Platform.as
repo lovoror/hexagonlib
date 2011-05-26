@@ -30,7 +30,7 @@ package com.hexagonstar.constants
 	/**
 	 * Provides runtime platform constants.
 	 */
-	public class Platform
+	public final class Platform
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
