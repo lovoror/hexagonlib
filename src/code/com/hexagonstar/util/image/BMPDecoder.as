@@ -36,7 +36,7 @@ package com.hexagonstar.util.image
 	/**
 	 * Utility class used to decode BMP files.
 	 */
-	public class BMPDecoder
+	public final class BMPDecoder
 	{
 		//-----------------------------------------------------------------------------------------
 		// Constants
@@ -168,7 +168,7 @@ package com.hexagonstar.util.image
 					decode32BitBMP();
 					break;
 				default:
-					throw new VerifyError("invalid bits per pixel : " + nBitsPerPixel);
+					throw new VerifyError("BMPDecoder: Invalid bits per pixel: " + nBitsPerPixel);
 			}
 			
 			return bd;
@@ -178,33 +178,34 @@ package com.hexagonstar.util.image
 		/**
 		 * print information
 		 */
-		public function dump():void
+		public function dump():String
 		{
-			trace("---- FILE HEADER ----");
-			trace("nFileSize: " + nFileSize);
-			trace("nReserved1: " + nReserved1);
-			trace("nReserved2: " + nReserved2);
-			trace("nOffbits: " + nOffbits);
-			trace("---- INFO HEADER ----");
-			trace("nWidth: " + nWidth);
-			trace("nHeight: " + nHeight);
-			trace("nPlains: " + nPlains);
-			trace("nBitsPerPixel: " + nBitsPerPixel);
-			if ( nInfoSize >= 40 )
+			var s:String = "---- FILE HEADER ----"
+				+ "\nnFileSize: " + nFileSize
+				+ "\nnReserved1: " + nReserved1
+				+ "\nnReserved2: " + nReserved2
+				+ "\nnOffbits: " + nOffbits
+				+ "\n---- INFO HEADER ----"
+				+ "\nnWidth: " + nWidth
+				+ "\nnHeight: " + nHeight
+				+ "\nnPlains: " + nPlains
+				+ "\nnBitsPerPixel: " + nBitsPerPixel;
+			if (nInfoSize >= 40)
 			{
-				trace("nCompression: " + nCompression);
-				trace("nSizeImage: " + nSizeImage);
-				trace("nXPixPerMeter: " + nXPixPerMeter);
-				trace("nYPixPerMeter: " + nYPixPerMeter);
-				trace("nColorUsed: " + nColorUsed);
-				trace("nColorUsed: " + nColorImportant);
+				s += "\nnCompression: " + nCompression
+					+ "\nnSizeImage: " + nSizeImage
+					+ "\nnXPixPerMeter: " + nXPixPerMeter
+					+ "\nnYPixPerMeter: " + nYPixPerMeter
+					+ "\nnColorUsed: " + nColorUsed
+					+ "\nnColorUsed: " + nColorImportant;
 			}
-			if ( nInfoSize >= 52 )
+			if (nInfoSize >= 52)
 			{
-				trace("nRMask: " + nRMask.toString(2));
-				trace("nGMask: " + nGMask.toString(2));
-				trace("nBMask: " + nBMask.toString(2));
+				s += "\nnRMask: " + nRMask.toString(2)
+					+ "\nnGMask: " + nGMask.toString(2)
+					+ "\nnBMask: " + nBMask.toString(2);
 			}
+			return s;
 		}
 		
 		
@@ -222,18 +223,18 @@ package com.hexagonstar.util.image
 			try
 			{
 				bytes.readBytes(fileHeader, 0, BITMAP_FILE_HEADER_SIZE);
-				if ( fileHeader.readUTFBytes(2) != BITMAP_HEADER_TYPE )
+				if (fileHeader.readUTFBytes(2) != BITMAP_HEADER_TYPE)
 				{
-					throw new VerifyError("invalid bitmap header type");
+					throw new VerifyError("BMPDecoder: Invalid bitmap header type.");
 				}
 				nFileSize = fileHeader.readUnsignedInt();
 				nReserved1 = fileHeader.readUnsignedShort();
 				nReserved2 = fileHeader.readUnsignedShort();
 				nOffbits = fileHeader.readUnsignedInt();
 			}
-			catch ( e:IOError )
+			catch (e:IOError)
 			{
-				throw new VerifyError("invalid file header");
+				throw new VerifyError("BMPDecoder: Invalid file header.");
 			}
 		}
 		
@@ -253,13 +254,13 @@ package com.hexagonstar.util.image
 				nPlains = coreHeader.readUnsignedShort();
 				nBitsPerPixel = coreHeader.readUnsignedShort();
 			}
-			catch ( e:IOError )
+			catch (e:IOError)
 			{
-				throw new VerifyError("invalid core header");
+				throw new VerifyError("BMPDecoder: Invalid core header.");
 			}
 		}
-
-
+		
+		
 		/**
 		 * read BITMAP INFO HEADER
 		 */
@@ -281,13 +282,13 @@ package com.hexagonstar.util.image
 				nColorUsed = infoHeader.readUnsignedInt();
 				nColorImportant = infoHeader.readUnsignedInt();
 			}
-			catch ( e:IOError )
+			catch (e:IOError)
 			{
-				throw new VerifyError("invalid info header");
+				throw new VerifyError("BMPDecoder: Invalid info header.");
 			}
 		}
-
-
+		
+		
 		/**
 		 * read the extend info of BITMAP INFO HEADER
 		 */
@@ -308,25 +309,25 @@ package com.hexagonstar.util.image
 				nYPixPerMeter = infoHeader.readInt();
 				nColorUsed = infoHeader.readUnsignedInt();
 				nColorImportant = infoHeader.readUnsignedInt();
-				if ( infoHeader.bytesAvailable >= 4 ) nRMask = infoHeader.readUnsignedInt();
-				if ( infoHeader.bytesAvailable >= 4 ) nGMask = infoHeader.readUnsignedInt();
-				if ( infoHeader.bytesAvailable >= 4 ) nBMask = infoHeader.readUnsignedInt();
+				if (infoHeader.bytesAvailable >= 4) nRMask = infoHeader.readUnsignedInt();
+				if (infoHeader.bytesAvailable >= 4) nGMask = infoHeader.readUnsignedInt();
+				if (infoHeader.bytesAvailable >= 4) nBMask = infoHeader.readUnsignedInt();
 			}
-			catch ( e:IOError )
+			catch (e:IOError)
 			{
-				throw new VerifyError("invalid info header");
+				throw new VerifyError("BMPDecoder: Invalid info header.");
 			}
 		}
-
-
+		
+		
 		/**
 		 * read bitfields
 		 */
 		private function readBitFields():void
 		{
-			if ( nCompression == COMP_RGB )
+			if (nCompression == COMP_RGB)
 			{
-				if ( nBitsPerPixel == BIT16 )
+				if (nBitsPerPixel == BIT16)
 				{
 					// RGB555
 					nRMask = 0x00007c00;
@@ -341,7 +342,7 @@ package com.hexagonstar.util.image
 					nBMask = 0x000000ff;
 				}
 			}
-			else if ( ( nCompression == COMP_BITFIELDS ) && ( nInfoSize < 52 ) )
+			else if ((nCompression == COMP_BITFIELDS) && (nInfoSize < 52))
 			{
 				try
 				{
@@ -349,29 +350,28 @@ package com.hexagonstar.util.image
 					nGMask = bytes.readUnsignedInt();
 					nBMask = bytes.readUnsignedInt();
 				}
-				catch ( e:IOError )
+				catch (e:IOError)
 				{
-					throw new VerifyError("invalid bit fields");
+					throw new VerifyError("BMPDecoder: Invalid bit fields.");
 				}
 			}
 		}
-
-
+		
+		
 		/**
 		 * read color palette
 		 */
 		private function readColorPalette():void
 		{
-			var i:int;
-			var len:int = ( nColorUsed > 0 ) ? nColorUsed : Math.pow(2, nBitsPerPixel);
+			var len:uint = (nColorUsed > 0) ? nColorUsed : Math.pow(2, nBitsPerPixel);
 			palette = new Array(len);
-			for ( i = 0; i < len; ++i )
+			for (var i:uint = 0; i < len; ++i)
 			{
-				palette[ i ] = bytes.readUnsignedInt();
+				palette[i] = bytes.readUnsignedInt();
 			}
 		}
-
-
+		
+		
 		/**
 		 * decode 1 bit BMP
 		 */
@@ -383,33 +383,33 @@ package com.hexagonstar.util.image
 			var col:int;
 			var buf:ByteArray = new ByteArray();
 			var line:int = nWidth / 8;
-			if ( line % 4 > 0 )
+			if (line % 4 > 0)
 			{
-				line = ( ( line / 4 | 0 ) + 1 ) * 4;
+				line = ((line / 4 | 0) + 1) * 4;
 			}
 			try
 			{
-				for ( y = nHeight - 1; y >= 0; --y )
+				for (y = nHeight - 1; y >= 0; --y)
 				{
 					buf.length = 0;
 					bytes.readBytes(buf, 0, line);
-					for ( x = 0; x < nWidth; x += 8 )
+					for (x = 0; x < nWidth; x += 8)
 					{
 						col = buf.readUnsignedByte();
-						for ( i = 0; i < 8; ++i )
+						for (i = 0; i < 8; ++i)
 						{
-							bd.setPixel(x + i, y, palette[ col >> ( 7 - i ) & 0x01 ]);
+							bd.setPixel(x + i, y, palette[col >> (7 - i) & 0x01]);
 						}
 					}
 				}
 			}
-			catch ( e:IOError )
+			catch (e:IOError)
 			{
-				throw new VerifyError("invalid image data");
+				throw new VerifyError("BMPDecoder: Invalid image data.");
 			}
 		}
-
-
+		
+		
 		/**
 		 * decode 4bit RLE
 		 */
@@ -424,17 +424,17 @@ package com.hexagonstar.util.image
 			var buf:ByteArray = new ByteArray();
 			try
 			{
-				for ( y = nHeight - 1; y >= 0; --y )
+				for (y = nHeight - 1; y >= 0; --y)
 				{
 					buf.length = 0;
-					while ( bytes.bytesAvailable > 0 )
+					while (bytes.bytesAvailable > 0)
 					{
 						n = bytes.readUnsignedByte();
-						if ( n > 0 )
+						if (n > 0)
 						{
 							// encode data
 							data = bytes.readUnsignedByte();
-							for ( i = 0; i < n / 2; ++i )
+							for (i = 0; i < n / 2; ++i)
 							{
 								buf.writeByte(data);
 							}
@@ -442,12 +442,12 @@ package com.hexagonstar.util.image
 						else
 						{
 							n = bytes.readUnsignedByte();
-							if ( n > 0 )
+							if (n > 0)
 							{
 								// abs mode
 								bytes.readBytes(buf, buf.length, n / 2);
 								buf.position += n / 2;
-								if ( n / 2 + 1 >> 1 << 1 != n / 2 )
+								if (n / 2 + 1 >> 1 << 1 != n / 2)
 								{
 									bytes.readUnsignedByte();
 								}
@@ -460,21 +460,21 @@ package com.hexagonstar.util.image
 						}
 					}
 					buf.position = 0;
-					for ( x = 0; x < nWidth; x += 2 )
+					for (x = 0; x < nWidth; x += 2)
 					{
 						col = buf.readUnsignedByte();
-						bd.setPixel(x, y, palette[ col >> 4 ]);
-						bd.setPixel(x + 1, y, palette[ col & 0x0f ]);
+						bd.setPixel(x, y, palette[col >> 4]);
+						bd.setPixel(x + 1, y, palette[col & 0x0f]);
 					}
 				}
 			}
-			catch ( e:IOError )
+			catch (e:IOError)
 			{
-				throw new VerifyError("invalid image data");
+				throw new VerifyError("BMPDecoder: Invalid image data.");
 			}
 		}
-
-
+		
+		
 		/**
 		 * decode 4bit (no Compression)
 		 */
@@ -506,7 +506,7 @@ package com.hexagonstar.util.image
 			}
 			catch ( e:IOError )
 			{
-				throw new VerifyError("invalid image data");
+				throw new VerifyError("BMPDecoder: Invalid image data.");
 			}
 		}
 
@@ -569,7 +569,7 @@ package com.hexagonstar.util.image
 			}
 			catch ( e:IOError )
 			{
-				throw new VerifyError("invalid image data");
+				throw new VerifyError("BMPDecoder: Invalid image data.");
 			}
 		}
 
@@ -603,7 +603,7 @@ package com.hexagonstar.util.image
 			}
 			catch ( e:IOError )
 			{
-				throw new VerifyError("invalid image data");
+				throw new VerifyError("BMPDecoder: Invalid image data.");
 			}
 		}
 
@@ -629,6 +629,7 @@ package com.hexagonstar.util.image
 			}
 			catch ( e:IOError )
 			{
+				throw new VerifyError("BMPDecoder: Invalid image data.");
 				throw new VerifyError("invalid image data");
 			}
 		}

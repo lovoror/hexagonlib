@@ -30,7 +30,7 @@ package com.hexagonstar.util.number
 	/**
 	 * Provides a set of methods for rolling multi-sided dice.
 	 */
-	public class Dice
+	public final class Dice
 	{
 		//-----------------------------------------------------------------------------------------
 		// Public Methods
