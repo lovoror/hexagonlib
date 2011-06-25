@@ -147,6 +147,20 @@ package com.hexagonstar.util.color
 		
 		
 		/**
+		 * @param s
+		 */
+		public function adjustSaturation(s:Number):void
+		{
+			var sInv:Number = (1 - s);
+			var irlum:Number = (sInv * LUMA_R);
+			var iglum:Number = (sInv * LUMA_G);
+			var iblum:Number = (sInv * LUMA_B);
+			concat([(irlum + s), iglum, iblum, 0, 0, irlum, (iglum + s), iblum, 0, 0,
+				irlum, iglum, (iblum + s), 0, 0, 0, 0, 0, 1, 0]);
+		}
+		
+		
+		/**
 		 * @param r
 		 * @param g
 		 * @param b
