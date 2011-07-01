@@ -4,7 +4,7 @@
 	Buildfile for SWC files
 *********************************************************************************************
 -->
-<project name="hexagonlib.lite" default="Init" basedir="..">
+<project name="hexagonlib" default="Init" basedir="..">
 	
 	<!-- application information -->
 	<property name="app.name"			value="hexagonlib"/>
@@ -17,7 +17,7 @@
 	<property name="swc.targetname"		value="hexagonlib.swc"/>
 	
 	<!-- version of the used flex sdk -->
-	<property name="sdk.version"		value="4.5.0"/>
+	<property name="sdk.version"		value="4.5.1"/>
 	
 	<!-- version of the targetted flash player -->
 	<property name="fpv.version"		value="10.2.0"/>
